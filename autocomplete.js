@@ -1,5 +1,16 @@
+const staticAnswers = {
+    's': ['s1', 's2', 's3', 'su1', 'su2'],
+    'su': ['su1', 'su2', 'su3', 'sum1', 'sum2'],
+    'sum': ['sum1', 'sum2', 'sum3', 'summer1', 'summer2'],
+    'summ': ['summer1', 'summer2', 'summer3'],
+    'summe': ['summer1', 'summer2', 'summer3'],
+    'summer': ['summer1', 'summer2', 'summer3'],
+    'summer1': ['summer1'],
+    'summer2': ['summer2'],
+    'summer3': ['summer3']
+}
 
-function autocomplete(targetDivId, url) {
+function autocomplete(targetDivId) {
     var container = document.getElementById(targetDivId);
     var input = container.querySelector('input');
     var datalist = container.querySelector('datalist');
@@ -15,20 +26,8 @@ function autocomplete(targetDivId, url) {
             return;
         }
 
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function () {
-            if (this.readyState !== 4) {
-                return;
-            }
-            if (this.status !== 200) {
-                console.error(request.responseText);
-                return;
-            }
-            updateDatalist(JSON.parse(request.responseText).entries);
-
-        };
-        request.open('GET', url + query);
-        request.send();
+        const options = staticAnswers[query] || [];
+        setTimeout(() => updateDatalist(options), 200);
     }
 
     function updateDatalist(options) {
@@ -38,16 +37,13 @@ function autocomplete(targetDivId, url) {
 
         options.forEach(function (option) {
             var element = document.createElement('option');
-            var display = option.english;
-            element.value = display;
-            element.appendChild(document.createTextNode(display));
+            element.value = option;
+            element.appendChild(document.createTextNode(option));
             datalist.appendChild(element);
         });
-
-        input.focus();
     }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    autocomplete('translate-search', 'https://spyu.ca/api/');
+    autocomplete('translate-search');
 });
